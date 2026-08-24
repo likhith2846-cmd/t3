@@ -1,0 +1,23 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isOwner() {
+      return request.auth != null
+        && request.auth.uid == "ysYGrhiB8PXWgvFTQrAroHg1xc43";
+    }
+
+    match /site/{document} { allow read: if true; allow write: if isOwner(); }
+    match /services/{document} { allow read: if true; allow write: if isOwner(); }
+    match /projects/{document} { allow read: if true; allow write: if isOwner(); }
+    match /reviews/{document} { allow read: if true; allow write: if isOwner(); }
+    match /faqs/{document} { allow read: if true; allow write: if isOwner(); }
+
+    match /karnet_enquiries/{document} {
+      allow create: if true;
+      allow read, update, delete: if isOwner();
+    }
+
+    match /{document=**} { allow read, write: if false; }
+  }
+}
